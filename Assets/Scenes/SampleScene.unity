@@ -677,11 +677,40 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3463081043585334354, guid: 58ce380f9a991704ab8a2b6b0ea28a82, type: 3}
+      propertyPath: _playerInput
+      value: 
+      objectReference: {fileID: 2927571241959432765}
+    - target: {fileID: 8620077622494310837, guid: 58ce380f9a991704ab8a2b6b0ea28a82, type: 3}
+      propertyPath: m_Constraints
+      value: 4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1877014535818210992, guid: 58ce380f9a991704ab8a2b6b0ea28a82, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2927571241959432765}
   m_SourcePrefab: {fileID: 100100000, guid: 58ce380f9a991704ab8a2b6b0ea28a82, type: 3}
+--- !u!1 &2927571241959432764 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1877014535818210992, guid: 58ce380f9a991704ab8a2b6b0ea28a82, type: 3}
+  m_PrefabInstance: {fileID: 2927571241959432763}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2927571241959432765
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2927571241959432764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6827b7c15752ca14f870100fdc73e975, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MetroPlatform.PlayerInput
+  InputAxisX: 0
 --- !u!1001 &5576824321800559587
 PrefabInstance:
   m_ObjectHideFlags: 0
