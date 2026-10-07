@@ -5,6 +5,7 @@ namespace MetroPlatform
     public class PlayerInput : MonoBehaviour
     {
         public float InputAxisX;
+        public bool InputJump;
         void Start()
         {
         
@@ -13,6 +14,8 @@ namespace MetroPlatform
         void Update()
         {
             InputAxisX = Input.GetAxisRaw("Horizontal");
+            InputJump = Input.GetButtonDown("Jump");
+
         }
     }
 }
