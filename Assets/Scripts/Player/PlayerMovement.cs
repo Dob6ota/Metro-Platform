@@ -1,3 +1,6 @@
+using NUnit.Framework;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MetroPlatform
@@ -9,8 +12,12 @@ namespace MetroPlatform
 
         [Header("Jump Setting")]
         [SerializeField] private float _jumpForce = 9f;
-        [SerializeField] private LayerMask _jumpLayerMask;
         [SerializeField] private float _jumpTimeTotal = 0.15f;
+
+        [SerializeField] private LayerMask _jumpLayerMask;
+
+        [SerializeField] private float _jumpFallAcceleration = 0.3f;
+
         [SerializeField] private float _inputBufferJumpTimeTotal = 0.15f;
         [SerializeField] private float _inputBufferJumpTimeCounter;
 
@@ -19,16 +26,25 @@ namespace MetroPlatform
 
 
         [Header("Inner Working")]
+
         [SerializeField] private float _moveHorizontal;
+
+        [SerializeField] private float _jumpFallForceActing;
         [SerializeField] private bool _canJump;
         [SerializeField] private bool _grounded;
         [SerializeField] private float _moveVertical;
-        [SerializeField] private bool _jumping;
-        [SerializeField] private float _jumpCounter;
+        //[SerializeField] private bool _jumping;
+        //[SerializeField] private float _jumpCounter;
 
 
         private float _inputAxisX => _playerInput.InputAxisX;
         private bool _inputJump => _playerInput.InputJump;
+
+        // Timers
+        [SerializeField] private TimerCountdown _timerJump;
+        [SerializeField] private TimerCountdown _timerFall;
+        [SerializeField] private TimerCountdown _timerCoyoteTime;
+        [SerializeField] private List<TimerCountdown> _timers;
 
         [Header("Refs")]
         [SerializeField] private PlayerInput _playerInput; //ссылки - поле
@@ -39,6 +55,7 @@ namespace MetroPlatform
 
         private static readonly int AnimVelocityX = Animator.StringToHash("VelocityX");
         private static readonly int AnimJumping = Animator.StringToHash("Jumping");
+        private static readonly int AnimFalling = Animator.StringToHash("Falling");
 
 
         private void Awake()
@@ -49,6 +66,20 @@ namespace MetroPlatform
                 _animator = _visuals.GetComponent<Animator>();
             if (_playerInput == null)
                 _playerInput = GetComponent<PlayerInput>();
+
+            InitializeTimers();
+        }
+
+        private void InitializeTimers()
+        {
+            _timerJump = new TimerCountdown(_jumpTimeTotal, "_timerJump");
+            _timerJump.Debugging = true;
+            _timerFall = new TimerCountdown(999f, "_timerFall");
+            _timerCoyoteTime = new TimerCountdown(_coyoteTimeTotal, "_timerCoyoteTime");
+
+            _timerJump.TimerStop += () => { _timerFall.Start(); };
+            _timerFall.TimerStart += () => _jumpFallForceActing = 0;
+            _timers = new List<TimerCountdown>(3) {_timerJump, _timerFall, _timerCoyoteTime };
         }
 
         private void Update()
@@ -59,24 +90,41 @@ namespace MetroPlatform
 
             _canJump = CanJump();
 
-            if (_jumping)
-            {
-                _jumpCounter -= Time.deltaTime;
-                if (_jumpCounter <= 0)
-                {
-                    _jumping = false;
-                }
-            }
+            UpdateTimers();
 
             Animate();
             Flip(_inputAxisX);
+        }
+
+        private void UpdateTimers()
+        {
+            foreach (var timer in _timers)
+            {
+                if (timer.IsRunning)
+                {
+                    Debug.Log($"timer {timer.Name} is Running");
+                    timer.Tick(Time.deltaTime);
+                }
+            }
         }
 
         private void FixedUpdate()
         {
             _moveHorizontal = FixedMove(_inputAxisX);
 
-            _moveVertical = FixedJump(_jumping);
+            if (_timerJump.IsRunning)
+            {
+                _moveVertical = FixedJump();
+                Debug.Log($"_moveVertical {_moveVertical}");
+            }
+
+            else if (_timerFall.IsRunning)
+            {
+                _moveVertical = FixedFall();
+                Debug.Log($"_moveVertical {_moveVertical}");
+            }
+
+            ChangeTimersState();
 
             _rb.linearVelocity = new Vector2(_moveHorizontal, _moveVertical);
         }
@@ -84,7 +132,8 @@ namespace MetroPlatform
         private void Animate()
         {
             _animator.SetFloat(AnimVelocityX, Mathf.Abs(_inputAxisX));
-            _animator.SetBool(AnimJumping, !_grounded);
+            _animator.SetBool(AnimJumping, _timerJump.IsRunning);
+            _animator.SetBool(AnimFalling, _timerFall.IsRunning);
         }
 
         private void Flip(float inputAxisX)
@@ -96,6 +145,20 @@ namespace MetroPlatform
             else
             {
                 transform.localEulerAngles = new Vector3(0, -180, 0 );
+            }
+        }
+
+        private void ChangeTimersState()
+        {
+            if (_timerFall.IsRunning && _grounded)
+            {
+                _timerFall.Stop();
+            }
+
+            if (_timerJump.IsRunning && _grounded && _timerJump.Progress > 0.3f)
+            {
+                _timerJump.Stop();
+
             }
         }
 
@@ -131,23 +194,22 @@ namespace MetroPlatform
             return inputAxisX * _walkSpeed;
         }
 
-        private float FixedJump(bool jumping)
+        private float FixedJump()
         {
-            if (jumping)
-            {
-                var progress = _jumpCounter / _jumpTimeTotal;
-                return _jumpForce;
-            }
+            return _jumpForce * _timerJump.ProgressReversed;
+        }
 
-            return 0f;
+        private float FixedFall()
+        {
+            _jumpFallForceActing -= _jumpFallAcceleration;
+            return _jumpFallForceActing;
         }
 
         private void OnJump(bool inputJump)
         {
-            if (inputJump && _canJump)
+            if (inputJump && _canJump && !_timerJump.IsRunning)
             {
-                _jumping = true;
-                _jumpCounter = _jumpTimeTotal;
+                _timerJump.Start(_jumpTimeTotal);
             }
         }
 
@@ -157,6 +219,11 @@ namespace MetroPlatform
             Debug.DrawRay(_groundCheckT.position, Vector2.down * 0.1f, raycastHit.collider != null ? Color.green : Color.red);
 
             return raycastHit.collider != null;
+        }
+
+        private void OnTimerJumpStopped()
+        {
+            _timerFall.Start();
         }
     }
 }

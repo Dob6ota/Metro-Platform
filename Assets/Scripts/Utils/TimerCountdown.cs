@@ -15,6 +15,7 @@ namespace MetroPlatform
 
         public bool IsFineshed => _timeCounter <= 0;
         public float Progress => 1 - (_timeCounter / _timeTotal);
+        public float ProgressReversed => _timeCounter / _timeTotal;
 
         public event Action TimerStart = delegate { };
         public event Action TimerStop = delegate { };
