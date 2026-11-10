@@ -50,7 +50,7 @@ namespace MetroPlatform
         {
             if (Debugging)
             {
-                Debug.Log($"Time {Name} Stop. TimeTotal: {_timeTotal}");
+				Debug.Log($"Time {Name} Stop. TimeTotal: {_timeTotal}");
             }
 
             if (IsRunning)

@@ -41,5 +41,20 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Background
+    uniqueID: 3373581469
+    locked: 0
+  - name: Middle
+    uniqueID: 1352708217
+    locked: 0
+  - name: Foreground
+    uniqueID: 487052737
+    locked: 0
+  - name: Char_Inter
+    uniqueID: 354656873
+    locked: 0
+  - name: Spells
+    uniqueID: 205309565
+    locked: 0
   m_RenderingLayers:
   - Default

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace MetroPlatform
 {
-    public class PlayerAttack : MonoBehaviour
+    public class PlayerAttack : DebuggableMonoBehaviour
     {
         [SerializeField] private float _distance = 0.5f;
 

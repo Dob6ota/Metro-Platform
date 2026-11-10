@@ -8,7 +8,7 @@ using static UnityEngine.RuleTile.TilingRuleOutput;
 namespace MetroPlatform
 {
     [CreateAssetMenu(fileName = "AttackLogicMelee new", menuName = "Scriptable Objects/AttackLogicMelee")]
-    public class AttackLogicMelee : ScriptableObject
+    public class AttackLogicMelee : DebuggableScriptableObject
     {
         [SerializeField] public float Damage = 5f;
 
@@ -29,7 +29,7 @@ namespace MetroPlatform
 
             foreach (var hit in raycastHits)
             {
-                Debug.Log($"PlayerAttack.Attack hit: {hit.transform.name}");
+                ConditDebugLog($"PlayerAttack.Attack hit: {hit.transform.name}");
                 if (hit.transform.TryGetComponent<IDamageable>(out IDamageable dmgTarget))
                 {
                     dmgTarget.ReceiveDamage(Damage);

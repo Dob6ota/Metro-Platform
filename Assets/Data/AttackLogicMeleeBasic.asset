@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bc9d2145dc871f42be76b1ce1462c3b, type: 3}
   m_Name: AttackLogicMeleeBasic
   m_EditorClassIdentifier: Assembly-CSharp::MetroPlatform.AttackLogicMelee
-  Damage: 10
-  AnimAttackParamHash: -1315428360
+  Debugging: 0
+  Damage: 5
+  AnimAttackParamHash: -1048419971
   AnimAttackName: AttackPunch

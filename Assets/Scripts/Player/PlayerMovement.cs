@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace MetroPlatform
 {
-    public class PlayerMovement : MonoBehaviour
+    public class PlayerMovement : DebuggableMonoBehaviour
     {
         [Header("Movement Setting")]
         [SerializeField] private float _walkSpeed = 6f;
@@ -72,7 +72,8 @@ namespace MetroPlatform
         private void InitializeTimers()
         {
             _timerJump = new TimerCountdown(_jumpTimeTotal, "_timerJump");
-            _timerJump.Debugging = true;
+            if (Debugging)
+                _timerJump.Debugging = true;
             _timerFall = new TimerCountdown(999f, "_timerFall");
             _timerCoyoteTime = new TimerCountdown(_coyoteTimeTotal, "_timerCoyoteTime");
 
@@ -113,7 +114,7 @@ namespace MetroPlatform
             {
                 if (timer.IsRunning)
                 {
-                    Debug.Log($"timer {timer.Name} is Running");
+                    ConditDebugLog($"timer {timer.Name} is Running");
                     timer.Tick(Time.deltaTime);
                 }
             }
@@ -126,13 +127,13 @@ namespace MetroPlatform
             if (_timerJump.IsRunning)
             {
                 _moveVertical = FixedJump();
-                Debug.Log($"_moveVertical {_moveVertical}");
+                ConditDebugLog($"_moveVertical {_moveVertical}");
             }
 
             else if (_timerFall.IsRunning)
             {
                 _moveVertical = FixedFall();
-                Debug.Log($"_moveVertical {_moveVertical}");
+                ConditDebugLog($"_moveVertical {_moveVertical}");
             }
 
             ChangeTimersState();

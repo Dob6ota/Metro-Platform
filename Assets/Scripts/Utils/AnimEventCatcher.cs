@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace MetroPlatform
 {
-    public class AnimEventCatcher : MonoBehaviour
+    public class AnimEventCatcher : DebuggableMonoBehaviour
     {
         [SerializeField] PlayerAttack _playerAttack;
         void Start()
