@@ -6,6 +6,7 @@ namespace MetroPlatform
     {
         public float InputAxisX;
         public bool InputJump;
+        public bool InputAttack;
         void Start()
         {
         
@@ -15,7 +16,7 @@ namespace MetroPlatform
         {
             InputAxisX = Input.GetAxisRaw("Horizontal");
             InputJump = Input.GetButtonDown("Jump");
-
+            InputAttack = Input.GetMouseButtonDown(0);
         }
     }
 }

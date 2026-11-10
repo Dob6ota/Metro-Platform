@@ -34,6 +34,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5209868330981891543}
+  - {fileID: 9033326479705326201}
   - {fileID: 7513382946275364996}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -123,21 +124,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   _walkSpeed: 6
-  _jumpForce: 9
+  _jumpForce: 18
+  _jumpTimeTotal: 0.35
   _jumpLayerMask:
     serializedVersion: 2
     m_Bits: 2097152
-  _jumpTimeTotal: 0.15
+  _jumpFallAcceleration: 0.3
   _inputBufferJumpTimeTotal: 0.15
   _inputBufferJumpTimeCounter: 0
-  _coyoteTimeTotal: 0.1
-  _coyoteTimeCounter: 0
+  _coyoteTimeTotal: 0.36
   _moveHorizontal: 0
+  _jumpFallForceActing: 0
   _canJump: 0
   _grounded: 0
   _moveVertical: 0
-  _jumping: 0
-  _jumpCounter: 0
   _playerInput: {fileID: 5550004123530285985}
   _visuals: {fileID: 7513382946275364996}
   _animator: {fileID: 3445582456261915443}
@@ -157,6 +157,117 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MetroPlatform.PlayerInput
   InputAxisX: 0
   InputJump: 0
+  InputAttack: 0
+--- !u!1 &3181254067000170846
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9033326479705326201}
+  - component: {fileID: 459383976571712497}
+  - component: {fileID: 7549061309963687080}
+  m_Layer: 22
+  m_Name: AttackCheck
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9033326479705326201
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3181254067000170846}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.502, y: -0.183, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3146564904738456232}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &459383976571712497
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3181254067000170846}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 0.01, y: 0.5}
+  m_EdgeRadius: 0
+--- !u!114 &7549061309963687080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3181254067000170846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0deccda49d621e4d8bbbf3f46fe5182, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MetroPlatform.PlayerAttack
+  _damage: 5
+  _distance: 0.5
+  _contactFilter:
+    useTriggers: 0
+    useLayerMask: 0
+    useDepth: 0
+    useOutsideDepth: 0
+    useNormalAngle: 0
+    useOutsideNormalAngle: 0
+    layerMask:
+      serializedVersion: 2
+      m_Bits: 0
+    minDepth: 0
+    maxDepth: 0
+    minNormalAngle: 0
+    maxNormalAngle: 0
+  _collider: {fileID: 459383976571712497}
+  _playerInput: {fileID: 0}
+  _animator: {fileID: 3445582456261915443}
 --- !u!1 &5875682201594267234
 GameObject:
   m_ObjectHideFlags: 0
@@ -167,6 +278,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7513382946275364996}
   - component: {fileID: 7194999217410367525}
+  - component: {fileID: 5664271302692091172}
   - component: {fileID: 3445582456261915443}
   m_Layer: 22
   m_Name: Visuals
@@ -249,6 +361,19 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &5664271302692091172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5875682201594267234}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a588689814492cf4f863114c542e7954, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MetroPlatform.AnimEventCatcher
+  _playerAttack: {fileID: 7549061309963687080}
 --- !u!95 &3445582456261915443
 Animator:
   serializedVersion: 7
@@ -259,7 +384,7 @@ Animator:
   m_GameObject: {fileID: 5875682201594267234}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 2026584fe60e93645985dc40de1c2a32, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -298,7 +423,7 @@ Transform:
   m_GameObject: {fileID: 8909808778198905481}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.339, z: 0}
+  m_LocalPosition: {x: 0, y: -1.335, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -147,14 +147,18 @@ namespace MetroPlatform
 
         private void Flip(float inputAxisX)
         {
-            if (inputAxisX >= 0)
+            if (inputAxisX != 0)
             {
-                transform.localEulerAngles = Vector3.zero;
+                if (inputAxisX > 0)
+                {
+                    transform.localEulerAngles = Vector3.zero;
+                }
+                else
+                {
+                    transform.localEulerAngles = new Vector3(0, -180, 0);
+                }
             }
-            else
-            {
-                transform.localEulerAngles = new Vector3(0, -180, 0 );
-            }
+
         }
 
         private void ChangeTimersState()
