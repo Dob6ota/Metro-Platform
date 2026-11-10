@@ -22,7 +22,6 @@ namespace MetroPlatform
         [SerializeField] private float _inputBufferJumpTimeCounter;
 
         [SerializeField] private float _coyoteTimeTotal = 0.1f;
-        [SerializeField] private float _coyoteTimeCounter;
 
 
         [Header("Inner Working")]
@@ -77,8 +76,20 @@ namespace MetroPlatform
             _timerFall = new TimerCountdown(999f, "_timerFall");
             _timerCoyoteTime = new TimerCountdown(_coyoteTimeTotal, "_timerCoyoteTime");
 
-            _timerJump.TimerStop += () => { _timerFall.Start(); };
+            _timerJump.TimerStart += () => {
+                _animator.SetBool(AnimJumping, _timerJump.IsRunning);
+            };
+            _timerJump.TimerStop += () => { 
+                _timerFall.Start();
+                _animator.SetBool(AnimJumping, _timerJump.IsRunning);
+                _animator.SetBool(AnimFalling, _timerFall.IsRunning);
+
+            };
             _timerFall.TimerStart += () => _jumpFallForceActing = 0;
+            _timerFall.TimerStop += () => {
+                _animator.SetBool(AnimFalling, _timerFall.IsRunning);
+            };
+
             _timers = new List<TimerCountdown>(3) {_timerJump, _timerFall, _timerCoyoteTime };
         }
 
@@ -131,9 +142,7 @@ namespace MetroPlatform
 
         private void Animate()
         {
-            _animator.SetFloat(AnimVelocityX, Mathf.Abs(_inputAxisX));
-            _animator.SetBool(AnimJumping, _timerJump.IsRunning);
-            _animator.SetBool(AnimFalling, _timerFall.IsRunning);
+            _animator.SetFloat(AnimVelocityX, Mathf.Abs(_inputAxisX));;
         }
 
         private void Flip(float inputAxisX)
@@ -180,13 +189,11 @@ namespace MetroPlatform
 
             if (_grounded)
             {
-                _coyoteTimeCounter = _coyoteTimeTotal;
+                _timerCoyoteTime.Reset();
+                _timerCoyoteTime.Start();
             }
-            else if (_coyoteTimeCounter > 0)
-            {
-                _coyoteTimeCounter -= Time.deltaTime;
-            }
-            return _coyoteTimeCounter > 0;
+
+            return _timerCoyoteTime.IsRunning && !_timerJump.IsRunning;
         }
 
         private float FixedMove(float inputAxisX) 
