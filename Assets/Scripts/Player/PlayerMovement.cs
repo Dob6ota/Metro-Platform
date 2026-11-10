@@ -32,14 +32,21 @@ namespace MetroPlatform
 
         [Header("Refs")]
         [SerializeField] private PlayerInput _playerInput; //ссылки - поле
+        [SerializeField] private Transform _visuals;
+        [SerializeField] private Animator _animator;
         [SerializeField] private Rigidbody2D _rb;
         [SerializeField] private Transform _groundCheckT;
+
+        private static readonly int AnimVelocityX = Animator.StringToHash("VelocityX");
+        private static readonly int AnimJumping = Animator.StringToHash("Jumping");
 
 
         private void Awake()
         {
             if (_rb == null)
                 _rb = GetComponent<Rigidbody2D>();
+            if (_animator == null)
+                _animator = _visuals.GetComponent<Animator>();
             if (_playerInput == null)
                 _playerInput = GetComponent<PlayerInput>();
         }
@@ -60,6 +67,9 @@ namespace MetroPlatform
                     _jumping = false;
                 }
             }
+
+            Animate();
+            Flip(_inputAxisX);
         }
 
         private void FixedUpdate()
@@ -69,6 +79,24 @@ namespace MetroPlatform
             _moveVertical = FixedJump(_jumping);
 
             _rb.linearVelocity = new Vector2(_moveHorizontal, _moveVertical);
+        }
+
+        private void Animate()
+        {
+            _animator.SetFloat(AnimVelocityX, Mathf.Abs(_inputAxisX));
+            _animator.SetBool(AnimJumping, !_grounded);
+        }
+
+        private void Flip(float inputAxisX)
+        {
+            if (inputAxisX >= 0)
+            {
+                transform.localEulerAngles = Vector3.zero;
+            }
+            else
+            {
+                transform.localEulerAngles = new Vector3(0, -180, 0 );
+            }
         }
 
         private void InputBufferJump(bool inputJump)
@@ -107,6 +135,7 @@ namespace MetroPlatform
         {
             if (jumping)
             {
+                var progress = _jumpCounter / _jumpTimeTotal;
                 return _jumpForce;
             }
 
@@ -124,8 +153,9 @@ namespace MetroPlatform
 
         private bool Grounded()
         {
-            RaycastHit2D raycastHit = Physics2D.Raycast(_groundCheckT.position, Vector2.down, 0.05f, _jumpLayerMask);
-            
+            RaycastHit2D raycastHit = Physics2D.Raycast(_groundCheckT.position, Vector2.down, 0.1f, _jumpLayerMask);
+            Debug.DrawRay(_groundCheckT.position, Vector2.down * 0.1f, raycastHit.collider != null ? Color.green : Color.red);
+
             return raycastHit.collider != null;
         }
     }

@@ -139,6 +139,8 @@ MonoBehaviour:
   _jumping: 0
   _jumpCounter: 0
   _playerInput: {fileID: 5550004123530285985}
+  _visuals: {fileID: 7513382946275364996}
+  _animator: {fileID: 3445582456261915443}
   _rb: {fileID: 8620077622494310837}
   _groundCheckT: {fileID: 5209868330981891543}
 --- !u!114 &5550004123530285985
