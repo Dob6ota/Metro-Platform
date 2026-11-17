@@ -65,19 +65,14 @@ namespace MetroPlatform
 
         private void Update()
         {
-            // Обработка ввода прыжка (буферизация)
             InputBufferJump(_inputJump);
 
-            // Попытка прыгнуть, если в буфере есть запас времени
             OnJump(_inputBufferJumpTimeCounter > 0);
 
-            // Проверка, можно ли прыгать (стоим на земле или в состоянии Coyote Time)
             _canJump = CanJump();
 
-            // Обновление всех активных таймеров (вычитание времени)
             UpdateTimers();
 
-            // Визуал (анимация и поворот)
             Animate();
             Flip(_inputAxisX);
         }
@@ -115,22 +110,22 @@ namespace MetroPlatform
             _timerCoyoteTime = new TimerCountdown(_coyoteTimeTotal, "_timerCoyoteTime");
 
             // подписка на события
-            // Когда прыжок начинается -> включаем анимацию прыжка
+            // Когда прыжок начинается, то включаем анимацию прыжка
             _timerJump.TimerStart += () => {
                 _animator.SetBool(AnimJumping, _timerJump.IsRunning);
             };
 
-            // Когда прыжок заканчивается -> начинаем падать, переключаем анимации
+            // Когда прыжок заканчивается, то начинает падать и переключаем анимации
             _timerJump.TimerStop += () => {
                 _timerFall.Start();
                 _animator.SetBool(AnimJumping, _timerJump.IsRunning);
                 _animator.SetBool(AnimFalling, _timerFall.IsRunning);
             };
 
-            // Когда падение начинается -> сбрасываем скорость падения в ноль
+            // Когда падение начинается, то сбрасываем скорость падения в ноль
             _timerFall.TimerStart += () => _jumpFallForceActing = 0;
 
-            // Когда падение заканчивается (приземлились) -> выключаем анимацию падения
+            // Когда падение заканчивается, то выключаем анимацию падения
             _timerFall.TimerStop += () => {
                 _animator.SetBool(AnimFalling, _timerFall.IsRunning);
             };
@@ -163,21 +158,21 @@ namespace MetroPlatform
             // Поворачиваем визуал в зависимости от направления движения
             if (inputAxisX != 0)
             {
-                if (inputAxisX > 0) transform.localEulerAngles = Vector3.zero;
-                else transform.localEulerAngles = new Vector3(0, -180, 0);
+                if (inputAxisX > 0)
+                    transform.localEulerAngles = Vector3.zero;
+                else
+                    transform.localEulerAngles = new Vector3(0, -180, 0);
             }
         }
 
         private void ChangeTimersState()
         {
-            // Если мы падаем и вдруг оказались на земле -> останавливаем таймер падения
+            // Если мы падаем и вдруг оказались на земле, то останавливаем таймер падения
             if (_timerFall.IsRunning && _grounded)
             {
                 _timerFall.Stop();
             }
 
-            // Если мы в прыжке, но уже на земле (например, ударились головой или приземлились раньше),
-            // и прогресс прыжка больше 30% -> принудительно останавливаем прыжок
             if (_timerJump.IsRunning && _grounded && _timerJump.Progress > 0.3f)
             {
                 _timerJump.Stop();
@@ -192,26 +187,25 @@ namespace MetroPlatform
 
         private float FixedJump()
         {
-            // Магия плавного прыжка: умножаем силу на ProgressReversed.
-            // В начале ProgressReversed = 1 (полная сила), к концу таймера = 0 (сила падает до нуля).
+            // В начале ProgressReversed = 1, к концу таймера = 0
             return _jumpForce * _timerJump.ProgressReversed;
         }
 
         private float FixedFall()
         {
-            // Кастомная гравитация: каждый кадр уменьшаем скорость (делаем её более отрицательной)
+            // каждый кадр уменьшаем скорость (делаем её более отрицательной)
             _jumpFallForceActing -= _jumpFallAcceleration;
             return _jumpFallForceActing;
         }
 
         private void InputBufferJump(bool inputJump)
         {
-            // Если игрок нажал кнопку -> обнуляем счетчик буфера
+            // Если игрок нажал кнопку, то обнуляем счетчик буфера
             if (inputJump)
             {
                 _inputBufferJumpTimeCounter = _inputBufferJumpTimeTotal;
             }
-            // Если не нажал, но счетчик еще не истек -> тикаем его вниз
+            // Если не нажал, но счетчик еще не истек, то обнуляем его
             else if (_inputBufferJumpTimeCounter > 0)
             {
                 _inputBufferJumpTimeCounter -= Time.deltaTime;
@@ -222,20 +216,20 @@ namespace MetroPlatform
         {
             _grounded = Grounded(); // Проверяем, стоим ли на земле
 
-            // Если на земле -> постоянно обновляем таймер Coyote Time
+            // Если на земле, то постоянно обновляем таймер кает тайм
             if (_grounded)
             {
                 _timerCoyoteTime.Reset();
                 _timerCoyoteTime.Start();
             }
 
-            // Прыгнуть можно, если таймер Coyote Time активен и мы еще не в прыжке
+            // Прыгнуть можно, если таймер кает тайм активен и мы еще не в прыжке
             return _timerCoyoteTime.IsRunning && !_timerJump.IsRunning;
         }
 
         private void OnJump(bool inputJump)
         {
-            // Если есть буфер ввода, мы можем прыгать и не прыгаем в данный момент -> запускаем прыжок
+            // Если есть буфер ввода, мы можем прыгать и не прыгаем в данный момент, то запускаем прыжок
             if (inputJump && _canJump && !_timerJump.IsRunning)
             {
                 _timerJump.Start(_jumpTimeTotal);
@@ -247,10 +241,10 @@ namespace MetroPlatform
             // Пускаем луч вниз из точки под ногами длиной 0.1f
             RaycastHit2D raycastHit = Physics2D.Raycast(_groundCheckT.position, Vector2.down, 0.1f, _jumpLayerMask);
 
-            // Рисуем луч в редакторе (зеленый, если попали в землю, красный - если нет)
+            // Рисуем луч в редакторе
             Debug.DrawRay(_groundCheckT.position, Vector2.down * 0.1f, raycastHit.collider != null ? Color.green : Color.red);
 
-            // Если луч во что-то попал (collider != null) -> мы на земле
+            // Если луч во что-то попал значит земля
             return raycastHit.collider != null;
         }
     }

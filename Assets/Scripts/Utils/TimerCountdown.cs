@@ -14,8 +14,8 @@ namespace MetroPlatform
         [field: SerializeField] public bool IsRunning { get; private set; }
 
         public bool IsFineshed => _timeCounter <= 0;
-        public float Progress => 1 - (_timeCounter / _timeTotal);
-        public float ProgressReversed => _timeCounter / _timeTotal;
+        public float Progress => 1 - (_timeCounter / _timeTotal); //сколько времени прошло
+        public float ProgressReversed => _timeCounter / _timeTotal; //сколько осталось
 
         public event Action TimerStart = delegate { };
         public event Action TimerStop = delegate { };
